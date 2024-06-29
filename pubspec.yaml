@@ -1,0 +1,45 @@
+name: frontendsistemidistribuitiprogetto
+description: Progetto di sistemi distribuiti
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.5 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  flutter_localizations:
+    sdk: flutter
+
+  http: ^1.0.0
+  url_launcher: ^6.1.11
+  intl: ^0.18.0
+  jwt_decoder: ^2.0.1
+  cupertino_icons: ^1.0.2
+  flutter_datetime_picker: ^1.5.1
+  amplify_flutter: ^0.2.8
+  amplify_auth_cognito: ^0.2.8
+  uuid: ^3.0.6
+  dio: ^4.0.0
+  cookie_jar: ^3.0.0
+  dio_cookie_manager: ^2.0.0
+  path_provider: ^2.0.0
+  file_picker: ^4.0.0
+
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/
+
