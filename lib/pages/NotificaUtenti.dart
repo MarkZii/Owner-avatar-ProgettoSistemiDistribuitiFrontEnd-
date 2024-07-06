@@ -8,11 +8,12 @@ import '../widgets/MessaggioDialogo.dart';
 
 class NotificaUtenti extends StatefulWidget {
   String titoloGen;
+  int giorni;
 
-  NotificaUtenti(this.titoloGen);
+  NotificaUtenti(this.titoloGen, this.giorni);
 
   @override
-  _NotificaUtentiPageState createState() => _NotificaUtentiPageState(titoloGen);
+  _NotificaUtentiPageState createState() => _NotificaUtentiPageState(titoloGen, giorni);
 }
 
 class _NotificaUtentiPageState extends State<NotificaUtenti> {
@@ -20,13 +21,18 @@ class _NotificaUtentiPageState extends State<NotificaUtenti> {
   List<String> utentiSelezionati = []; // Lista degli ID degli utenti selezionati
   String titoloGen;
   bool isLoading = false; // Flag per indicare se stiamo caricando gli utenti
+  int giorni;
 
   String testoOggetto = "Nuovo sondaggio disponibile!";
-  String testoCorpo = "Ciao, il nostro "+Model.utente+" ha appena creato un nuovo questionario. Che ne dici di accedere e dirci la tua a riguardo? Ti aspettiamo presto.";
-  final TextEditingController textController1 = TextEditingController(text: "Nuovo sondaggio disponibile!");
-  final TextEditingController textController2 = TextEditingController(text: "Ciao, il nostro "+Model.utente+" ha appena creato un nuovo questionario. Che ne dici di accedere e dirci la tua a riguardo? Ti aspettiamo presto.");
+  String testoCorpo;// = "Ciao, il nostro "+Model.utente+" ha appena creato un nuovo questionario. Che ne dici di accedere e dirci la tua a riguardo? Ti aspettiamo presto.\nFai presto! Il questionario scade tra "+giorni.toString()+" giorni.";
+  final TextEditingController textController1;// = TextEditingController(text: "Nuovo sondaggio disponibile!");
+  final TextEditingController textController2;// = TextEditingController(text: "Ciao, il nostro "+Model.utente+" ha appena creato un nuovo questionario. Che ne dici di accedere e dirci la tua a riguardo? Ti aspettiamo presto.");
 
-  _NotificaUtentiPageState(this.titoloGen);
+  _NotificaUtentiPageState(this.titoloGen, this.giorni)
+      : testoCorpo = "Ciao, il nostro " + Model.utente + " ha appena creato un nuovo questionario dal titolo \'"+titoloGen+"\'. Che ne dici di accedere e dirci la tua a riguardo? Fai presto! Il questionario scade tra " + giorni.toString() + " giorni.  Ti aspettiamo!.",
+        textController1 = TextEditingController(text: "Nuovo sondaggio disponibile!"),
+        textController2 = TextEditingController(text: "Ciao, il nostro " + Model.utente + " ha appena creato un nuovo questionario dal titolo \'"+titoloGen+"\'. Che ne dici di accedere e dirci la tua a riguardo? Fai presto! Il questionario scade tra " + giorni.toString() + " giorni. Ti aspettiamo!.");
+
 
 
   @override

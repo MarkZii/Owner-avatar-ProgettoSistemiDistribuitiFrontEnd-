@@ -3,6 +3,7 @@ import 'dart:html' as html;
 import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:frontendsistemidistribuitiprogetto/pages/PaginaAccesso.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
@@ -27,14 +28,18 @@ class CreaQuestionario extends StatefulWidget {
 class _SearchState extends State<CreaQuestionario> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _durationController = TextEditingController();
   static late String titoloGen = "";
+  static late int durataGiorni = 0;
   List<Domanda> domande = [];
   //List<String> immaginiDove = [];
   Map<int, List<TextEditingController>> _controllersMap = {};
 
   bool _titleEmpty = false;
+  bool _durationEmpty = false;
   bool _descriptionEmpty = false;
   bool questionarioSalvato = false;
+  bool _isNotANumber = false;
 
   void _caricaImmagine(html.File file, Domanda domanda) async {
     // Leggi il contenuto dell'immagine come base64
@@ -52,12 +57,24 @@ class _SearchState extends State<CreaQuestionario> {
   Future<void> _salvaQuestionario() async {
     final String titolo = _titleController.text;
     final String descrizione = _descriptionController.text;
+    final int durata = int.parse(_durationController.text);
     var uuid = Uuid();
 
+    if (!_descriptionEmpty) {
+      try {
+        int.parse(_descriptionController.text);
+      } catch (e) {
+        _isNotANumber = true;
+      }
+    }
+
     titoloGen = titolo;
+    durataGiorni = durata;
     setState(() {
       _titleEmpty = _titleController.text.isEmpty;
       _descriptionEmpty = _descriptionController.text.isEmpty;
+      _durationEmpty = _durationController.text.isEmpty;
+      _isNotANumber;
     });
 
     if(domande.isEmpty){
@@ -71,7 +88,7 @@ class _SearchState extends State<CreaQuestionario> {
       );
       return;
     }
-    if(!_titleEmpty && !_descriptionEmpty ) {
+    if(!_titleEmpty && !_descriptionEmpty && !_durationEmpty ) {
       List<Map<String, dynamic>> domandeJson = domande.map((domande) =>
           domande.toJson()).toList();
 
@@ -82,6 +99,7 @@ class _SearchState extends State<CreaQuestionario> {
         'data_ora': '',
         'titolo': titolo,
         'descrizione': descrizione,
+        'durata': durata,
         'domande': domandeJson,
       };
       print(domande.toString());
@@ -120,12 +138,9 @@ class _SearchState extends State<CreaQuestionario> {
   void _apriNuovaPagina() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => NotificaUtenti(titoloGen)),
+      MaterialPageRoute(builder: (context) => NotificaUtenti(titoloGen,durataGiorni)),
     );
   }
-
-  //TODO gestire il fatto che almeno una domanda ci deve essere obligatoriamente
-  //TODO gestire il fatto che il campo "testo della domanda", tutte le i-esime risposte e l'immagine devono essere compilate prima di salvare il questionario
 
   @override
   void dispose() {
@@ -159,8 +174,8 @@ class _SearchState extends State<CreaQuestionario> {
         }
       });
       _controllersMap = newMap;
-
-      Model().eliminaImmagine(fileName);
+      if(fileName.isNotEmpty)
+        Model().eliminaImmagine(fileName);
     });
   }
 
@@ -204,6 +219,25 @@ class _SearchState extends State<CreaQuestionario> {
                         ),
                       ),
                     ),
+                  ),
+                  SizedBox(height: 20),
+                  TextFormField(
+                    controller: _durationController,
+                    decoration: InputDecoration(
+                      labelText: 'Durata in giorni del questionario',
+                      errorText: _durationEmpty
+                          ? 'Questo campo non può essere vuoto'
+                          : null,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: _durationEmpty ? Colors.red : Colors.grey,
+                        ),
+                      ),
+                    ),
+                    inputFormatters: <TextInputFormatter>[
+                      FilteringTextInputFormatter.digitsOnly,
+                    ],
+                    keyboardType: TextInputType.number,
                   ),
                   SizedBox(height: 20),
                   ListTile(
@@ -551,12 +585,15 @@ class _QuestionWidgetState extends State<QuestionWidget> {
                           labelText: 'Quante risposte alla domanda vuoi fornire?',
                           border: OutlineInputBorder(),
                         ),
-                        keyboardType: TextInputType.number,
                         onChanged: (value) {
                           if (value.isNotEmpty) {
                             _generateAnswers(int.parse(value));
                           }
                         },
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                        keyboardType: TextInputType.number,
                       ),
                     ),
                     IconButton(

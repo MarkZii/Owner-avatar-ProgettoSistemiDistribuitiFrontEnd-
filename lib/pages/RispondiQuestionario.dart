@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import '../model/Model.dart';
 import '../model/objects/Compilazione.dart';
 import '../model/objects/Domanda.dart';
@@ -18,7 +19,7 @@ class RispondiQuestionario extends StatefulWidget {
 }
 class _SearchState extends State<RispondiQuestionario> {
   late Future<List<Questionario>> futureQuestionari;
-
+  late String scadenza;
   // @override
   // void initState() {
   //   super.initState();
@@ -63,15 +64,33 @@ class _SearchState extends State<RispondiQuestionario> {
 
                     itemCount: snapshot.data!.length,
                     itemBuilder: (BuildContext context, int index) {
+
+                      DateTime dataCreazione = DateTime.parse(snapshot.data![index].data_ora);
+                      int differenzaGiorni = DateTime.now().difference(dataCreazione).inDays;
+                      bool eCompilabile = differenzaGiorni > snapshot.data![index].durata;
+
+                      if(!eCompilabile){
+                        scadenza = "La scadenza del questionario è dopo: " + snapshot.data![index].durata.toString()+" giorni dalla data di creazione";
+                      }else{
+                        scadenza = "SCADUTO";
+                      }
                       return InkWell(
-                        onTap: () {
+                        onTap: !eCompilabile ? () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => QuizDetailScreen(questionario: snapshot.data![index].domande, titoloQuestionario: snapshot.data![index].titolo, descrizioneQuestionario: snapshot.data![index].descrizione, idQuestionario: snapshot.data![index].id_questionario),
                             ),
                           );
-                        },
+                        } :  () { showDialog(
+                          context: context,
+                          builder: (context) =>
+                              MessaggioDialogo(
+                                titleText: "Opss...",
+                                bodyText: "Impossibile compilare il questionario. Tempo scaduto!",
+                              ),
+                          );
+                          },
                         child: Padding(
                           padding: const EdgeInsets.only(bottom: 16.0),
                           child: Card(
@@ -116,6 +135,14 @@ class _SearchState extends State<RispondiQuestionario> {
                                       fontSize: 16.0,
                                     ),
                                   ),
+                                    SizedBox(height: 8.0),
+                                    Text(
+                                      scadenza,
+                                      style: TextStyle(
+                                        fontSize: 16.0,
+                                      ),
+                                    ),
+
                                 ],
                               ),
                             ),

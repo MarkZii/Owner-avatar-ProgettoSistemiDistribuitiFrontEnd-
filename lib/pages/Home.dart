@@ -7,7 +7,6 @@ import 'package:url_launcher/url_launcher.dart';
 import '../model/Model.dart';
 import '../widgets/MessaggioDialogo.dart';
 import 'CreaQuestionario.dart';
-import 'RispondiQuestionario2.dart';
 import 'VisualizzaRisultati.dart';
 import 'VisualizzaTuttiQuestionari.dart';
 import 'package:flutter/material.dart';

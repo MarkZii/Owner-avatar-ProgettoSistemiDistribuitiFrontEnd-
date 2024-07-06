@@ -4,7 +4,7 @@ class Constants {
   static final String APP_NAME = "Questionari Online";
 
   // addresses
-  static final String ADDRESS_ECOMMERCE_SERVER = "http://backendquestionarionline-env.eba-bwrhwg9u.eu-north-1.elasticbeanstalk.com";
+  static final String ADDRESS_ECOMMERCE_SERVER = "http://localhost:5000";
 
   // authentication
   static final String REALM = "Questionari Online";

@@ -6,6 +6,7 @@ class Questionario {
   String data_ora;
   String titolo;
   String descrizione;
+  int durata;
   List<Domanda> domande;
 
 
@@ -15,6 +16,7 @@ class Questionario {
     required this.data_ora,
     required this.titolo,
     required this.descrizione,
+    required this.durata,
     required this.domande});
 
   factory Questionario.fromJson(Map<String, dynamic> json) {
@@ -28,6 +30,7 @@ class Questionario {
         data_ora: json['data_ora'],
         titolo: json['titolo'],
         descrizione: json['descrizione'],
+        durata: json['durata'],
         domande: dom
     );
   }
@@ -38,11 +41,12 @@ class Questionario {
     'data_ora': data_ora,
     'titolo': titolo,
     'descrizione': descrizione,
+    'durata': durata,
     'domande': domande.map((domanda) => domanda.toJson()).toList()
   };
 
   @override
   String toString() {
-    return id_questionario+" "+nome_autore+" "+titolo+" "+descrizione;
+    return id_questionario+" "+nome_autore+" "+titolo+" "+descrizione+""+durata.toString();
   }
 }

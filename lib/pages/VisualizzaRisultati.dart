@@ -17,7 +17,7 @@ class VisualizzaRisultati extends StatefulWidget {
 
 class _SearchState extends State<VisualizzaRisultati> {
   late Future<List<Risultati>> futureRisultati;
-
+  late String scadenza;
   @override
   void initState() {
     super.initState();
@@ -55,6 +55,17 @@ class _SearchState extends State<VisualizzaRisultati> {
 
                   itemCount: snapshot.data!.length,
                   itemBuilder: (BuildContext context, int index) {
+
+                    DateTime dataCreazione = DateTime.parse(snapshot.data![index].data_ora);
+                    int differenzaGiorni = DateTime.now().difference(dataCreazione).inDays;
+                    bool eCompilabile = differenzaGiorni > snapshot.data![index].durata;
+
+                    if(!eCompilabile){
+                      scadenza = "Campagna di sottomissione non terminata - Risultati PARZIALI!";
+                    }else{
+                      scadenza = "Campagna di sottomissione terminata - Risultati FINALI!";
+                    }
+
                     return InkWell(
                       onTap: () {
                         Navigator.push(
@@ -77,7 +88,7 @@ class _SearchState extends State<VisualizzaRisultati> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Questionario " + (index + 1).toString(),
+                                  "Questionario " + (index + 1).toString()+" "+scadenza,
                                   style: TextStyle(
                                       fontSize: 18.0,
                                       color: Colors.lightBlue

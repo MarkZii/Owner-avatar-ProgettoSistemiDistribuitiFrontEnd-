@@ -7,6 +7,7 @@ class Risultati {
   String data_ora;
   String titolo;
   String descrizione;
+  int durata;
   int numeroRisposte;
   List<ResocontoDomande> resocontoDomande;
 
@@ -17,6 +18,7 @@ class Risultati {
     required this.data_ora,
     required this.titolo,
     required this.descrizione,
+    required this.durata,
     required this.numeroRisposte,
     required this.resocontoDomande});
 
@@ -31,6 +33,7 @@ class Risultati {
         data_ora: json['data_ora'],
         titolo: json['titolo'],
         descrizione: json['descrizione'],
+        durata: json['durata'],
         numeroRisposte: json['numeroRisposte'],
         resocontoDomande: resoconto
     );
@@ -42,6 +45,7 @@ class Risultati {
     'data_ora': data_ora,
     'titolo': titolo,
     'descrizione': descrizione,
+    'durata': durata,
     'numeroRisposte': numeroRisposte,
     'resocontoDomande': resocontoDomande.map((resocontoDomande) => resocontoDomande.toJson()).toList()
   };

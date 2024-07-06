@@ -18,6 +18,7 @@ class VisualizzaTuttiQuestionari extends StatefulWidget {
 
 class _SearchState extends State<VisualizzaTuttiQuestionari> {
   late Future<List<Questionario>> futureQuestionari;
+  late String scadenza;
 
   @override
   void initState() {
@@ -44,6 +45,7 @@ class _SearchState extends State<VisualizzaTuttiQuestionari> {
             child: FutureBuilder<List<Questionario>>(
               future: futureQuestionari,
               builder: (context, snapshot) {
+
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
@@ -56,6 +58,15 @@ class _SearchState extends State<VisualizzaTuttiQuestionari> {
 
                     itemCount: snapshot.data!.length,
                     itemBuilder: (BuildContext context, int index) {
+                      DateTime dataCreazione = DateTime.parse(snapshot.data![index].data_ora);
+                      int differenzaGiorni = DateTime.now().difference(dataCreazione).inDays;
+                      bool eCompilabile = differenzaGiorni > snapshot.data![index].durata;
+
+                      if(!eCompilabile){
+                        scadenza = "La scadenza del questionario è dopo: " + snapshot.data![index].durata.toString()+" giorni dalla data di creazione";
+                      }else{
+                        scadenza = "Campagna di sottomissione scaduta";
+                      }
                       return InkWell(
                         onTap: () {
                           Navigator.push(
@@ -102,6 +113,13 @@ class _SearchState extends State<VisualizzaTuttiQuestionari> {
                                   SizedBox(height: 8.0),
                                   Text(
                                     "Creato da: " + snapshot.data![index].nome_autore+" di "+snapshot.data![index].data_ora,
+                                    style: TextStyle(
+                                      fontSize: 16.0,
+                                    ),
+                                  ),
+                                  SizedBox(height: 8.0),
+                                  Text(
+                                    scadenza,
                                     style: TextStyle(
                                       fontSize: 16.0,
                                     ),
